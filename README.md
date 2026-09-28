@@ -1,5 +1,7 @@
 # My Vocabulary App — 3주차: 빌드와 웹서버
 
+> 4주차(컨테이너): `docker compose up --build` 한 줄로 앱 + API 실행 → [DEPLOY.md](./DEPLOY.md)
+
 GDGoC KU FE 스터디 3주차 과제입니다. 2주차에 만든 단어장 앱을 `npm run build` 로 빌드하고,
 Docker로 띄운 **nginx** 위에 올려 `http://localhost:8080` 으로 접속할 수 있게 만들었습니다.
 

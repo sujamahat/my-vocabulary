@@ -1,0 +1,84 @@
+# ==================================================================
+# .dockerignore — 도커에게 "이건 보내지 마라" 목록
+# ==================================================================
+# 이 파일은 앱 프로젝트 루트(package.json 옆)에 두고 씁니다.
+#
+# [무슨 일을 하나요]
+#   docker build 를 하면 도커는 먼저 빌드 컨텍스트(그 폴더 전체)를
+#   통째로 도커 엔진에 전송합니다. 여기 적힌 것은 전송에서 제외됩니다.
+#
+# [왜 필요한가요]
+#   1. 속도 — node_modules 는 파일이 수만 개입니다. 이걸 매번 전송하면
+#      빌드 시작 전에만 수십 초가 날아갑니다. 제외하면 몇 초로 줄어듭니다.
+#   2. 캐시 — 로그 파일 같은 게 컨텍스트에 있으면 내용이 바뀔 때마다
+#      도커가 "뭔가 달라졌다"고 판단해 캐시를 버립니다.
+#   3. 보안 — .env 에 든 API 키가 이미지 안으로 들어가면
+#      그 이미지를 받은 사람 누구나 꺼내볼 수 있습니다.
+#   4. 정확성 — 내 컴퓨터의 node_modules 는 macOS 용으로 설치된 것일 수 있습니다.
+#      리눅스 컨테이너 안에서는 동작하지 않습니다.
+#      컨테이너 안에서 npm ci 로 새로 설치하는 게 맞습니다.
+#
+# .gitignore 와 문법은 같지만 별개의 파일입니다. 서로 영향을 주지 않습니다.
+# ==================================================================
+
+# ---- 의존성 ----
+# 컨테이너 안에서 npm ci 로 새로 설치하므로 보낼 필요가 없습니다.
+node_modules
+.pnpm-store
+.yarn
+
+# ---- 빌드 결과물 ----
+# Dockerfile.vite / Dockerfile.next 는 컨테이너 안에서 직접 빌드합니다.
+# 내 컴퓨터의 옛날 dist 가 섞여 들어가면 엉뚱한 게 배포될 수 있습니다.
+#
+# ※ Dockerfile.simple 을 쓸 때는 이야기가 다릅니다.
+#   그건 "이미 만들어진 dist 를 복사"하는 방식이라 dist 가 반드시 필요합니다.
+#   Dockerfile.simple 로 실습할 때는 아래 dist 줄을 잠시 주석 처리하세요.
+#   (그대로 두면 "/dist: not found" 에러가 납니다)
+dist
+build
+.next
+out
+
+# ---- 환경변수 / 비밀값 ----
+# ★ 이미지 안에 절대 들어가면 안 되는 것들입니다.
+# 필요한 값은 Dockerfile 의 ARG 나 compose 의 args 로 명시적으로 주입합니다.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- 버전관리 / 에디터 / OS ----
+.git
+.gitignore
+.github
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# ---- 로그 / 캐시 ----
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+.cache
+.eslintcache
+coverage
+
+# ---- 문서 (이미지 실행에 필요 없음) ----
+*.md
+docs
+
+# ---- 도커 파일 자신 ----
+# 이미지 안에 Dockerfile 이 들어갈 이유는 없습니다.
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# 미니 API 는 별도 이미지로 빌드
+mini-api
+GDGoC-KU-FE-Study-Materials
+my-vocabulary-week2
+screenshot.png
